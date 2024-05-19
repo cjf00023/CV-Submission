@@ -1,0 +1,33 @@
+64 12 32 32
+// The first line should contain the width and height of the
+// map and the width and height of each tile. A list of character to
+// tile mappings is then provided where each character is preceded by a
+// # character. The dot character always defaults to a blank space 
+// Note that the referenced files should be in the same directory as the
+// tile map.
+#g=Ground_09.png
+#r=Ground_02.png
+#o=Ground_13.png
+#u=Ground_10.png
+#n=Ground_11.png
+#d=Ground_12.png
+#s=Ground_06.png
+#1=Coin_01.png
+#*=Sign_05.png
+#z=spikes.png  
+// The actual tile map is preceded by the #map line
+#map
+o..............................................................g
+o..............................................................g
+o..............................................................g
+o...............................................*..............g
+o..........................................gnnnnnnd............g
+o.........................und.........unnn.nnnnnnnnnnnnnnnnnnnnn
+rrrr...............................unnnd..z.ssssssssssssssssssss
+ssssrr...........1..........................ssssssssssssssssssss
+ssssssrr...rrr..und...........1...und........sssssssssssssssssss
+sssssssr...r...........1........und.............ssssssssssssssss
+ssssssss.zzzz..... rrrrrrrrrr......zz.........ssssssssssssssssss
+rrrrrrrrrrrrrzzzrrrrsssssssrrrzzzzzzzzzzzzzzzzssssssssssssssssss
+
+
