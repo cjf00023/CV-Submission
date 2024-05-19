@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: auto;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2, h3, h4 {
+            margin-top: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Student Dashboard</h2>
+
+    <!-- Student Form -->
+    <form id="studentForm">
+        <label for="sName">Name:</label>
+        <input type="text" id="sName" name="sName" required>
+
+        <label for="sNumber">Student Number:</label>
+        <input type="text" id="sNumber" name="sNumber" required>
+
+        <label for="sProgram">Program:</label>
+        <select id="sProgram" name="sProgram" required>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Software Engineering">Software Engineering</option>.
+          </select>
+
+        <label for="sYear">Year:</label>
+        <input type="text" id="sYear" name="sYear" required>
+
+        <label for="booking">BookingId:</label>
+        <input type="text" id="bookingId" name="bookingId">
+
+        <label for="reason">Reason for Booking:</label>
+        <input type="text" id="reason" name="reason" required>
+
+        <label for="preferredDay">Preferred Day:</label>
+        <select id="preferredDay" name="preferredDay" required>
+            <!-- Assuming a three-week period starting from Monday, 4th December -->
+            <option value="2023-12-04">Monday, December 4, 2023</option>
+            <option value="2023-12-05">Tuesday, December 5, 2023</option>
+            <option value="2023-12-06">Wednesday, December 6, 2023</option>
+            <option value="2023-12-07">Thursday, December 7, 2023</option>
+            <option value="2023-12-08">Friday, December 8, 2023</option>
+            <option value="2023-12-11">Monday, December 11, 2023</option>
+            <option value="2023-12-12">Tuesday, December 12, 2023</option>
+            <option value="2023-12-13">Wednesday, December 13, 2023</option>
+            <option value="2023-12-14">Thursday, December 14, 2023</option>
+            <option value="2023-12-15">Friday, December 15, 2023</option>
+            <option value="2023-12-18">Monday, December 18, 2023</option>
+            <option value="2023-12-19">Tuesday, December 19, 2023</option>
+            <option value="2023-12-20">Wednesday, December 20, 2023</option>
+            <option value="2023-12-21">Thursday, December 21, 2023</option>
+            <option value="2023-12-22">Friday, December 22, 2023</option>
+        </select>
+
+        <label for="preferredTime">Preferred Time:</label>
+        <select id="preferredTime" name="preferredTime" required>
+            <option value="09:00 AM">09:00 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+            <option value="11:00 AM">11:00 AM</option>
+            <option value="12:00 PM">12:00 PM</option>
+            <option value="01:00 PM">01:00 PM</option>
+            <option value="02:00 PM">02:00 PM</option>
+            <option value="03:00 PM">03:00 PM</option>
+            <option value="04:00 PM">04:00 PM</option>
+        </select>
+
+        <label for="preferredProfessor">Preferred Professor:</label>
+        <input type="text" id="preferredProfessor" name="preferredProfessor" required>
+
+        <button type="button" onclick="createBooking()">Create Booking</button>
+        <button type="button" onclick="cancelBooking()">Cancel Booking</button>
+        <button type="button" onclick="getUpcomingBookings()">Get Upcoming Bookings</button>
+    </form>
+
+    <h3>Upcoming Bookings</h3>
+    <ul id="output">
+        <!-- The list of upcoming bookings will be dynamically populated here -->
+    </ul>
+
+    <script>
+function populateOptions(options) {
+    const output = document.getElementById('output');
+
+    // Clear existing list items
+    output.innerHTML = "";
+
+    // Add options
+    JSON.parse(options).forEach(booking => {
+        // Create list item
+        const listItem = document.createElement('li');
+
+        // Populate list item with booking details
+        for (const key in booking) {
+            if (booking.hasOwnProperty(key)) {
+                // Check if the field is the 'student' object
+                if (key === 'student' && typeof booking[key] === 'object') {
+                    // Break up the 'student' object into fields
+                    const studentFields = booking[key];
+                    for (const studentKey in studentFields) {
+                        if (studentFields.hasOwnProperty(studentKey)) {
+                            const fieldLabel = studentKey.charAt(0).toUpperCase() + studentKey.slice(1);
+                            listItem.innerHTML += `<strong>${fieldLabel}:</strong> ${studentFields[studentKey]}<br>`;
+                        }
+                    }
+                } else {
+                    // For other fields, directly display key-value pairs
+                    const fieldLabel = key.charAt(0).toUpperCase() + key.slice(1);
+                    listItem.innerHTML += `<strong>${fieldLabel}:</strong> ${booking[key]}<br>`;
+                }
+            }
+        }
+
+        // Add spacing between entries
+        listItem.innerHTML += '<br>';
+
+        // Append list item to the output
+        output.appendChild(listItem);
+    });
+}
+
+
+
+
+
+
+
+
+
+
+        function dataBody(data) {
+        return data ? JSON.parse(JSON.stringify(data)):'';
+        }
+
+        function createBooking() {
+            // Retrieve values from the form
+            //Booking values
+            const reason_val = document.getElementById("reason").value;
+            const preferredDay_val = document.getElementById("preferredDay").value;
+            const preferredTime_val = document.getElementById("preferredTime").value;
+            const preferredProfessor_val = document.getElementById("preferredProfessor").value;
+
+            //Set bookingId as null as we will edit it in the service
+            //const BookingId_val = document.getElementById("bookingId").value;
+            //Student Values
+            const name_val = document.getElementById("sName").value;
+            const number_val = document.getElementById("sNumber").value;
+            const program_val = document.getElementById("sProgram").value;
+            const year_val = document.getElementById("sYear").value;
+            const url = 'http://localhost:8080/ding'
+
+            let data = {
+      bookingid: "_",
+      booking: reason_val,
+      datetime: preferredDay_val + " " + preferredTime_val,
+      professor: preferredProfessor_val,
+      student: {
+          name: name_val,
+          number: number_val,
+          program: program_val,
+          year: year_val,
+      },
+  };
+
+    fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data),
+    })
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      let responseData = await response.text();
+      output.innerText = `${response.status}\n${dataBody(responseData)}`;
+    })
+  .catch(error => {
+  console.error('Error during fetch:', error);
+  output.innerHTML = `Error: ${error.message}`;
+  });
+  }
+    function cancelBooking() {
+      // Retrieve values from the form
+        const BookingId_val = document.getElementById("bookingId").value;
+          console.log("BookingId_val:", BookingId_val);
+
+            // Use encodeURIComponent to properly encode special characters in the URL
+              const encodedBookingId = encodeURIComponent(BookingId_val);
+              const url = `http://localhost:8080/ding/${encodedBookingId}`;
+
+                fetch(url, {
+      method: 'DELETE',
+      }).then(async (response) => {
+      let data = await response.text();
+      output.innerText = `${response.status}\n${dataBody(data)}`;
+      }).catch(error => output.innerHTML = error);
+  }
+
+
+
+            // Implement the logic to send the student form data to the server and cancel a booking
+
+
+        function getUpcomingBookings() {
+        // This is a placeholder function to simulate fetching upcoming bookings from the server
+        // Clear existing list items
+        let url = 'http://localhost:8080/ding'
+        fetch(url).then(async (response) => {
+          let data = await response.text();
+          output.innerText = `${response.status}\n${dataBody(data)}`;
+          populateOptions(data);
+        }).catch(error => output.innerHTML = error);
+    }
+    </script>

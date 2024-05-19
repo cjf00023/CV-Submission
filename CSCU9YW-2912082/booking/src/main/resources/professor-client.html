@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: auto;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2, h3, h4 {
+            margin-top: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>professor Dashboard</h2>
+
+    <!-- prof Form -->
+    <form id="professorForm">
+        <label for="sProgram">Program:</label>
+        <select id="sProgram" name="sProgram" required>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Software Engineering">Software Engineering</option>
+            <!-- Add more program options as needed -->
+        </select>
+
+        <label for="preferredProfessor">Preferred Professor:</label>
+        <input type="text" id="preferredProfessor" name="preferredProfessor" required>
+        <button type="button" onclick="getUpcomingBookings()">Get Upcoming Bookings</button>
+        <button type="button" onclick="searchBookingsByProfessor()">Search by professor</button>
+    </form>
+
+    <h3>Upcoming Bookings</h3>
+    <ul id="output">
+        <!-- The list of upcoming bookings will be dynamically populated here -->
+    </ul>
+
+    <script>
+function populateOptions(options) {
+    const output = document.getElementById('output');
+
+    // Clear existing list items
+    output.innerHTML = "";
+
+    // Add options
+    JSON.parse(options).forEach(booking => {
+        // Create list item
+        const listItem = document.createElement('li');
+
+        // Populate list item with booking details
+        for (const key in booking) {
+            if (booking.hasOwnProperty(key)) {
+                // Check if the field is the 'student' object
+                if (key === 'student' && typeof booking[key] === 'object') {
+                    // Break up the 'student' object into fields
+                    const studentFields = booking[key];
+                    for (const studentKey in studentFields) {
+                        if (studentFields.hasOwnProperty(studentKey)) {
+                            const fieldLabel = studentKey.charAt(0).toUpperCase() + studentKey.slice(1);
+                            listItem.innerHTML += `<strong>${fieldLabel}:</strong> ${studentFields[studentKey]}<br>`;
+                        }
+                    }
+                } else {
+                    // For other fields, directly display key-value pairs
+                    const fieldLabel = key.charAt(0).toUpperCase() + key.slice(1);
+                    listItem.innerHTML += `<strong>${fieldLabel}:</strong> ${booking[key]}<br>`;
+                }
+            }
+        }
+
+        // Add spacing between entries
+        listItem.innerHTML += '<br>';
+
+        // Append list item to the output
+        output.appendChild(listItem);
+    });
+}
+function dataBody(data) {
+return data ? JSON.parse(JSON.stringify(data)):'';
+}
+            // Implement the logic to send the student form data to the server and cancel a booking
+
+
+        function getUpcomingBookings() {
+        // This is a placeholder function to simulate fetching upcoming bookings from the server
+        // Clear existing list items
+        let url = 'http://localhost:8080/ding'
+        fetch(url).then(async (response) => {
+          let data = await response.text();
+          output.innerText = `${response.status}\n${dataBody(data)}`;
+          populateOptions(data);
+        }).catch(error => output.innerHTML = error);
+    }
+    function searchBookingsByProfessor() {
+    // Retrieve values for professor search
+    const professorNameSearch = document.getElementById("preferredProfessor").value;
+    const professorProgramSearch = document.getElementById("sProgram").value;
+
+    // Ensure both fields are not empty
+    if (!professorNameSearch || !professorProgramSearch) {
+        alert("Please enter both the professor's name and select a program for the search.");
+        return;
+    }
+
+    // Construct the URL with search parameters
+    const url = `http://localhost:8080/ding/search?professorName=${encodeURIComponent(professorNameSearch)}&professorProgram=${encodeURIComponent(professorProgramSearch)}`;
+
+    fetch(url)
+        .then(async (response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            let responseData = await response.json(); // Assuming the response is JSON
+            output.innerHTML = formatData(responseData);
+        })
+        .catch(error => {
+            console.error('Error during fetch:', error);
+            output.innerHTML = `Error: ${error.message}`;
+        });
+}
+
+function formatData(data) {
+    console.log(data);  // Log the entire response data to the console for inspection
+
+    // Implement your custom formatting logic here
+    // For example, you can construct an HTML string
+    let htmlString = '';
+
+    data.forEach(booking => {
+        htmlString += `<div class="booking-item">`;
+        htmlString += `<strong>Booking ID:</strong> ${booking.bookingId || 'N/A'}<br>`;  // Use default value if bookingid is undefined
+        htmlString += `<strong>Booking:</strong> ${booking.booking || 'N/A'}<br>`;
+        htmlString += `<strong>Professor:</strong> ${booking.professor || 'N/A'}<br>`;
+        htmlString += `<strong>Datetime:</strong> ${booking.datetime || 'N/A'}<br>`;
+        htmlString += `<strong>Name:</strong> ${booking.student.name || 'N/A'}<br>`;
+        htmlString += `<strong>Number:</strong> ${booking.student.number || 'N/A'}<br>`;
+        htmlString += `<strong>Program:</strong> ${booking.student.program || 'N/A'}<br>`;
+        htmlString += `<strong>Year:</strong> ${booking.student.year || 'N/A'}<br>`;
+        htmlString += `</div><br>`;
+    });
+
+    return htmlString;
+}
+
+
+
+
+
+
+
+
+
+    </script>
